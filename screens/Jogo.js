@@ -4,10 +4,12 @@ import {StyleSheet,Text,View, TouchableOpacity,Alert,Button} from 'react-native'
 import Icon from 'react-native-vector-icons/EvilIcons';
 import Icon2 from 'react-native-vector-icons/Entypo';
 
-export default class Jogo extends React.Component{
-constructor(props){
-  super(props);
 
+export default class Jogo extends React.Component{
+
+constructor(props){
+  var historico = [];
+  super(props);
   this.state ={
     gameState:[
     [0,0,0],
@@ -33,21 +35,25 @@ this.setState({gameState:
     currentPlayer: 1,
   });
 }
+
 //return 1 if player 1 wibm -1 if player 2 won, or 0 if no one has won
 getWinner = ()=>{
   const NUM_TILES = 3;
   var arr = this.state.gameState;
   var sum;
+  var todas = 0;
 
   //checkrows...
   for (var i = 0; i < NUM_TILES;i++){
-    sum= arr[i][0] + arr[i][1] + arr[i][2];
+    sum = arr[i][0] + arr[i][1] + arr[i][2];
+    if (arr[i][0] != 0 & arr[i][1] != 0 & arr[i][2] != 0){todas++}
     if (sum==3){return 1;}
     else if(sum == -3){return -1; }
   }
   //check columns
   for (var i = 0; i < NUM_TILES; i++){
     sum=arr[0][i] + arr[1][i] + arr[2][i]; 
+    if (arr[0][i] != 0 & arr[1][i] != 0 & arr[2][i] != 0){todas++}
     if (sum==3){return 1;}
     else if(sum == -3){return -1; }
   }
@@ -57,10 +63,17 @@ getWinner = ()=>{
   if (sum==3){return 1;}
   else if(sum == -3){return -1; }
 
+
   sum = arr[2][0] + arr[1][1] + arr[0][2];
   if (sum==3){return 1;}
   else if(sum == -3){return -1; }
 
+
+  if (sum != 3 & sum != -3 ){
+    if (todas >= 6){
+      return 3;
+    }
+  }
   //there are no winners...
   return 0;
 }
@@ -75,8 +88,9 @@ onTilePress = (row,col) => {
   var currentPlayer = this.state.currentPlayer;
 
   //set the correct tile
+
   var arr = this.state.gameState.slice();
-  arr [row][col] = currentPlayer;
+  arr[row][col] = currentPlayer;
   this.setState({gameState: arr});
 
   //switch to other player
@@ -85,6 +99,7 @@ onTilePress = (row,col) => {
   this.setState({currentPlayer:nextPlayer});
 
   //check for winners
+
   var winner = this.getWinner();
   if (winner == 1){
     Alert.alert("Player 1 is the winner");
@@ -93,7 +108,14 @@ onTilePress = (row,col) => {
   }else if (winner == -1){
     Alert.alert("Player 2 is the winner");
     this.initializeGame();
+
+  }else if (winner == 3){
+      Alert.alert("Empate");
+      this.initializeGame();
+
   }
+
+  //check all tiles pressed 
 }
 
 onNewGamePress = () =>{
@@ -116,15 +138,15 @@ renderIcon = (row,col)=>{
       <View style = {styles.container}>
 
           <View style={{flexDirection:"row",alignItems:"center",justifyContent:"center"}}>
-            <TouchableOpacity OnPress={()=> this.onTilePress(0,0)} style={[styles.tile,{borderLeftWidth:0,borderTopWidth:0}]}>
+            <TouchableOpacity onPress={() => this.onTilePress(0,0)} style={[styles.tile,{borderLeftWidth:0,borderTopWidth:0}]}>
               {this.renderIcon(0,0)}
             </TouchableOpacity>
 
-            <TouchableOpacity OnPress={()=> this.onTilePress(0,1)} style={[styles.tile,{borderTopWidth:0}]}>
+            <TouchableOpacity onPress={()=> this.onTilePress(0,1)} style={[styles.tile,{borderTopWidth:0}]}>
             {this.renderIcon(0,1)}
             </TouchableOpacity>
 
-            <TouchableOpacity  OnPress={()=> this.onTilePress(0,2)} style={[styles.tile,{borderRightWidth:0,borderTopWidth:0}]}>
+            <TouchableOpacity  onPress={()=> this.onTilePress(0,2)} style={[styles.tile,{borderRightWidth:0,borderTopWidth:0}]}>
             {this.renderIcon(0,2)}
             </TouchableOpacity>
 
@@ -132,13 +154,13 @@ renderIcon = (row,col)=>{
 
           <View style={{flexDirection:"row"}}>
 
-            <TouchableOpacity OnPress={()=> this.onTilePress(1,0)}  style={[styles.tile,{borderLeftWidth:0}]}>
+            <TouchableOpacity onPress={()=> this.onTilePress(1,0)}  style={[styles.tile,{borderLeftWidth:0}]}>
             {this.renderIcon(1,0)}
             </TouchableOpacity>
-            <TouchableOpacity  OnPress={()=> this.onTilePress(1,1)} style={[styles.tile,{}]}>
+            <TouchableOpacity  onPress={()=> this.onTilePress(1,1)} style={[styles.tile,{}]}>
             {this.renderIcon(1,1)}
             </TouchableOpacity>
-            <TouchableOpacity  OnPress={()=> this.onTilePress(1,2)} style={[styles.tile,{borderRightWidth:0}]}>
+            <TouchableOpacity  onPress={()=> this.onTilePress(1,2)} style={[styles.tile,{borderRightWidth:0}]}>
             {this.renderIcon(1,2)}
             </TouchableOpacity>
 
@@ -147,13 +169,13 @@ renderIcon = (row,col)=>{
 
           <View style={{flexDirection:"row"}}>
 
-            <TouchableOpacity  OnPress={()=> this.onTilePress(2,0)} style={[styles.tile,{borderBottomWidth:0,borderLeftWidth:0}]}>
+            <TouchableOpacity  onPress={()=> this.onTilePress(2,0)} style={[styles.tile,{borderBottomWidth:0,borderLeftWidth:0}]}>
             {this.renderIcon(2,0)}
             </TouchableOpacity>
-            <TouchableOpacity  OnPress={()=> this.onTilePress(2,1)} style={[styles.tile,{borderBottomWidth:0}]}>
+            <TouchableOpacity  onPress={()=> this.onTilePress(2,1)} style={[styles.tile,{borderBottomWidth:0}]}>
             {this.renderIcon(2,1)}
             </TouchableOpacity>
-            <TouchableOpacity  OnPress={()=> this.onTilePress(2,2)} style={[styles.tile,{borderBottomWidth:0,borderRightWidth:0}]}>
+            <TouchableOpacity  onPress={()=> this.onTilePress(2,2)} style={[styles.tile,{borderBottomWidth:0,borderRightWidth:0}]}>
             {this.renderIcon(2,2)}
             </TouchableOpacity>
 

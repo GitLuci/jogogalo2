@@ -12,10 +12,10 @@ return(
         <Text style={styles.container2}>O primeiro jogador marca um dos espaços em branco da malha
         e depois o segundo jogador devera marcar outro ponto da malha, quem completar uma fileira completa (em diagonal, horizontal
         ou vertical) ganha. Divirta-se !</Text>
-
+        
         <Text style={styles.container}> Problemas acerca do codigo</Text>
-        <Text style={styles.container2}>TouchableOpacity não funcional</Text>
         <Text style={styles.container2}>Historico não funcional</Text>
+
     </View>
 );
 
